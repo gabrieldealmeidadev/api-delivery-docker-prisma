@@ -15,12 +15,12 @@ class DeliveriesController {
   }
   async create(request: Request, response: Response) {
     try {
-      const bodyShema = z.object({
+      const bodySchema = z.object({
         user_id: z.string().uuid(),
         description: z.string().trim(),
       });
 
-      const { user_id, description } = bodyShema.parse(request.body);
+      const { user_id, description } = bodySchema.parse(request.body);
 
       const deliveries = await prisma.delivery.create({
         data: {

@@ -10,5 +10,6 @@ const deliveriesController = new DeliveriesController();
 deliveriesRoutes.use(ensureAuthenticated, roleVerify(["sale"]));
 deliveriesRoutes.get("/", deliveriesController.index);
 deliveriesRoutes.post("/", deliveriesController.create);
+deliveriesRoutes.patch("/:id/status", deliveriesController.update);
 
 export { deliveriesRoutes };

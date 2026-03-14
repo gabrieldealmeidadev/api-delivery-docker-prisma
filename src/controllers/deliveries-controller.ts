@@ -27,9 +27,18 @@ class DeliveriesController {
           userId: user_id,
           description,
         },
+        include: {
+          user: {
+            select: {
+              name: true,
+              id: true,
+              email: true,
+            },
+          },
+        },
       });
 
-      return response.status(201).json("ok create");
+      return response.status(201).json(deliveries);
     } catch (error) {
       return response.status(500).json({ message: "Error Intern server" });
     }
@@ -48,19 +57,62 @@ class DeliveriesController {
       const { id } = paramsSchema.parse(request.params);
       const { status } = bodySchema.parse(request.body);
 
-      await prisma.delivery.update({
-        data: {
-          status,
-        },
+      const deliveryExists = await prisma.delivery.findUnique({
         where: {
           id,
         },
       });
-      return response
-        .status(201)
-        .json({ message: "Successfully updated delivery" });
+
+      if (!deliveryExists) {
+        throw new AppError("Delivery not found", 404);
+      }
+
+      if (deliveryExists.status === status) {
+        throw new AppError(`Delivery is already ${status}`, 400);
+      }
+
+      if (status === "delivered" && deliveryExists.status !== "shipped") {
+        throw new AppError("Delivery must be shipped before delivered", 400);
+      }
+
+      const delivery = await prisma.delivery.update({
+        where: {
+          id,
+        },
+        data: {
+          status,
+        },
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+        },
+      });
+
+      await prisma.deliveryLog.create({
+        data: {
+          deliveryId: id,
+          description: status,
+        },
+      });
+
+      return response.status(200).json({
+        message: "Successfully updated delivery",
+        delivery,
+      });
     } catch (error) {
-      return response.status(500).json({ message: "Error Intern server" });
+      if (error instanceof AppError) {
+        return response.status(error.statusCode).json({
+          message: error.message,
+        });
+      }
+
+      return response.status(500).json({
+        message: "Internal server error",
+      });
     }
   }
 }

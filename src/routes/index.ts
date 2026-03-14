@@ -9,6 +9,6 @@ const routes = Router();
 routes.use("/users", usersRoutes);
 routes.use("/auth", authRoutes);
 routes.use("/deliveries", deliveriesRoutes);
-routes.use("/deliveriesLogs", deliverieslogsRoutes);
+routes.use("/deliverieslogs", deliverieslogsRoutes);
 
 export { routes };

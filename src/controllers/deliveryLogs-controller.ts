@@ -21,6 +21,10 @@ class DeliveriesLogsController {
         throw new AppError("Delivery not found", 404);
       }
 
+      if (delivery.status === "delivered") {
+        throw new AppError("this ordem has already been delivered ", 400);
+      }
+
       if (delivery.status === "processing") {
         throw new AppError("Change status to shipped first", 400);
       }
@@ -40,6 +44,13 @@ class DeliveriesLogsController {
         });
       }
 
+      if (error instanceof z.ZodError) {
+        return response.status(400).json({
+          message: "Validation error",
+          issues: error.errors,
+        });
+      }
+
       return response.status(500).json({
         message: "Internal server error",
       });
@@ -56,6 +67,9 @@ class DeliveriesLogsController {
 
       const delivery = await prisma.delivery.findUnique({
         where: { id: delivery_id },
+        include: {
+          logs: true,
+        },
       });
 
       if (
@@ -67,6 +81,19 @@ class DeliveriesLogsController {
 
       return response.json(delivery);
     } catch (error) {
+      if (error instanceof AppError) {
+        return response.status(error.statusCode).json({
+          message: error.message,
+        });
+      }
+
+      if (error instanceof z.ZodError) {
+        return response.status(400).json({
+          message: "Validation error",
+          issues: error.errors,
+        });
+      }
+
       return response.status(500).json({
         message: "Internal server error",
       });

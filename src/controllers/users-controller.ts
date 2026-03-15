@@ -20,7 +20,7 @@ class UsersController {
   async create(request: Request, response: Response) {
     const bodySchema = z.object({
       name: z.string().trim().min(3),
-      email: z.string(),
+      email: z.string().email(),
       password: z.string().trim().min(6),
     });
 

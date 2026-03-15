@@ -23,3 +23,25 @@
 //REMOVENDO AS IMAGENS
 
 # docker rmi --id--imagem
+
+2️⃣ Testes automatizados com jest
+
+# npm install --save-dev jest
+
+# npm install --save-dev ts-jest @types/jest
+
+# npx ts-jest config:init
+
+module.exports = {
+preset: "ts-jest",
+testEnvironment: "node",
+};
+
+"scripts": {
+"test": "jest"
+"test:dev": "jest --watch"
+}
+
+3️⃣ Testar um arquivo específico
+
+# npx jest src/tests/users-controller.test.ts

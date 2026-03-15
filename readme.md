@@ -45,3 +45,14 @@ testEnvironment: "node",
 3️⃣ Testar um arquivo específico
 
 # npx jest src/tests/users-controller.test.ts
+
+4️⃣ Buildando projeto
+
+# npm install tsup@8.3.0 -D
+
+"build": "tsup dis",
+"start": "node --env-file=.env dist/server.js"
+
+"engines": {
+"node": ">=18"
+}

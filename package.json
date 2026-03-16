@@ -10,7 +10,7 @@
     "test": "jest",
     "test:dev": "jest --watch",
     "build": "tsup src",
-    "start": "node --env-file=.env dist/server.js"
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "gabriel de almeida",
